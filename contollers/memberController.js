@@ -4,7 +4,10 @@ let memberController = module.exports;
 
 memberController.home = (req, res) => {
   console.log("GET cont.home");
-  res.send("home sahifadasiz");
+  let nick = "nomalum user";
+  console.log(req.session);
+  if (req.session.member) nick = req.session.member.mb_nick;
+  res.send(`home sahifadasiz hurmatli ${nick}`);
 };
 
 memberController.signup = async (req, res) => {
@@ -25,6 +28,8 @@ memberController.login = async (req, res) => {
     console.log("POST cont.login");
     const member = new Member();
     const result = await member.loginData(req.body);
+    // clientga session id saqlash
+    req.session.member = result;
     res.json({ state: "success", data: result });
   } catch (err) {
     console.log(err.message);
